@@ -1,0 +1,4 @@
+[submodule "tomviz"]
+	path = tomviz
+	url = git@github.com:SirSharpest/tomviz.git
+	branch = master
