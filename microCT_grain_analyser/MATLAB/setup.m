@@ -19,9 +19,9 @@
 
 directory = '/home/phenomics/Primitives/*.ISQ*';
 
-structEleSize = 7; % Changed this, switched on WS and rerunning
+structEleSize = 5; % Changed this, switched on WS and rerunning
 voxelSize = 68.8;
-minSize = 2000; 
+minSize = 1000; 
 
 tic % start timer
 % Process the file directory! 
