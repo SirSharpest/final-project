@@ -1,5 +1,4 @@
-testFile = 'c:/Users/Nathan/Desktop/Primitive Example/C0002776.ISQ'
-%testFile = '/home/phenomics/Primitives/00002881/C0002782.ISQ'; 
+testFile = '/home/phenomics/Primitives/00002881/C0002782.ISQ'; 
 
 img = readISQ(testFile); 
 
@@ -54,14 +53,10 @@ end
 % Want to grab these BEFORE we filter out small objects
 [r, rtop, rbottom] = segmentRachis(img);
 
+
+
 % Split up image as needed 
 bw = watershedSplit3DTestMode(bw); 
 
-
-% Pause here as we may wanna try something a little different when
-% exploring the structure of wheat
-
-
-
 % Filter out any left over objects which haven't been split
-%[bw, gray] = filterSmallObjs(bw, gray, minSize); 
+[bw, gray] = filterSmallObjs(bw, gray, minSize); 

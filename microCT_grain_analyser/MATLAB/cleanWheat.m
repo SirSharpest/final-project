@@ -28,7 +28,8 @@ se = strel('disk', seSize); % changed from 5
 % calculate thresholding value 
 [pixelCounts, grayLevels] = imhist(img(:));
 cdf = cumsum(pixelCounts) / sum(pixelCounts);
-thresholdIndex = find(cdf < 0.93, 1, 'last'); 
+% for the prims lets let through a little more just initally 
+thresholdIndex = find(cdf < 0.88, 1, 'last'); 
 thresholdValue = grayLevels(thresholdIndex);
 
 if ~isempty(which('ginfo'))
@@ -58,8 +59,6 @@ end
 
 % Want to grab these BEFORE we filter out small objects
 [r, rtop, rbottom] = segmentRachis(img);
-
-
 
 % Split up image as needed 
 bw = watershedSplit3D(bw); 
