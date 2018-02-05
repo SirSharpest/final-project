@@ -19,6 +19,7 @@ The functionality will include:
 from glob import glob
 from os.path import basename
 import pandas as pd
+import numpy as np
 
 def gather_data(folder):
     """
@@ -27,15 +28,17 @@ def gather_data(folder):
     @param folder is a starting folder
     @returns tuple of (seed files, rachis files)
     """
-    
+    #check the end of the folder has a '/'
+    if folder[-1] != '/':
+        folder = folder + '/'
     search_params = '{0}*/*.csv'
     candidate_files = glob(search_params.format(folder))
     # we aren't bothered about the raw files so lets remove them
-    [candidate_files.remove(f) for f in candidate_files if 'raw' in f]
+    candidate_files = [f for f in candidate_files if 'raw' not in f]
     # now let's separate out the rachis
     rachis = [f for f in candidate_files if 'rachis' in f]
     # and just assume the rest is what we want 
-    [candidate_files.remove(f) for f in candidate_files if 'rachis' in f]
+    candidate_files = [f for f in candidate_files if 'rachis' not in f]
     return (candidate_files, rachis)
 
 def make_dataframe(grain_files, rachis_files=None):
@@ -59,4 +62,13 @@ def make_dataframe(grain_files, rachis_files=None):
             v['rbot'] = rachis[k]['rbot'][0]
     return pd.concat(dfs.values())
     
+
+
+
+def remove_percentile(df, column):
+    P = np.percentile(df[column], [10, 90])
+    return df[(df[column] > P[0]) & (df[column] < P[1])]
+
+def join_spikes(grain_df, excel_file, join_column):
+    pass
     
