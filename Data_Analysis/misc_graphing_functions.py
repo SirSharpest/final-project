@@ -24,7 +24,9 @@ def qq_grid(dataframe, attributes):
     for idx, att in enumerate(attributes): 
         x = idx // 4
         y = idx % 4
-        qqplot(dataframe[att], plot=axes[x,y])
+        
+        # Convert everything to log10 for this 
+        qqplot(np.log10(dataframe[att]), plot=axes[x,y])
         axes[x,y].set_title(att)
         
         if x < 0:
@@ -46,5 +48,5 @@ def qq_grid(dataframe, attributes):
         else:
             p = '>0.05'
             
-        axes[x,y].text(0,10, r'$P${0}'.format(p))
+        axes[x,y].text(1,-6, r'$P${0}'.format(p))
     return axes

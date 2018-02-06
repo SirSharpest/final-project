@@ -17,7 +17,7 @@ The functionality will include:
 
 
 from glob import glob
-from os.path import basename
+from os.path import basename, dirname
 import pandas as pd
 import numpy as np
 
@@ -47,20 +47,29 @@ def make_dataframe(grain_files, rachis_files=None):
     grain parameters and optionally of the rachis top and bottom
     @param grain_files is the output from gather_data
     @param rachis_files is an optional output from gather_data also
+    
+    @returns a dataframe of the information pre-joining
     """
     # load the files as dfs 
-    dfs = {basename(f).split('.',1)[0]:pd.read_csv(f) for f in grain_files}
+    dfs = {f:pd.read_csv(f) for f in grain_files}
     # load the files for rachis too
     if rachis_files:
-        rachis = {basename(f).split('.',1)[0]:pd.read_csv(f) for f in rachis_files}
+        rachis = {f:pd.read_csv(f) for f in rachis_files}
     # add plant name to files 
     # and rachis if applicable 
     for k, v in dfs.items():
-        v['plantid'] = k     
+        # Grab the plant name and the folder name 
+        v['scanid'] = basename(k).split('.',1)[0]
+        v['folderid'] = dirname(k).rsplit('/',1)[-1]
         if rachis_files:
-            v['rtop'] = rachis[k]['rtop'][0]
-            v['rbot'] = rachis[k]['rbot'][0]
-    return pd.concat(dfs.values())
+            # reverse the rachis here so we don't have to later
+            v['rbot'] = rachis['{0}-rachis.csv'.format(k[:-4])]['rtop'][0]
+            v['rtop'] = rachis['{0}-rachis.csv'.format(k[:-4])]['rbot'][0]
+    #Flip the scans so that the Z makes sense
+    df = pd.concat(dfs.values())
+    df['z'] = abs(df['z'] - df['z'].max())
+    
+    return df  
     
 
 
@@ -70,5 +79,15 @@ def remove_percentile(df, column):
     return df[(df[column] > P[0]) & (df[column] < P[1])]
 
 def join_spikes(grain_df, excel_file, join_column):
-    pass
+    """
+    This function should do something akin to joining spikes based
+    on a config file
+    
+    @note there is some confusion in the NPPC about whether to use 
+    folder name or file name as the unique id when this is made into 
+    end-user software, a toggle should be added to allow this
+    """
+    
+    info_file = pd.read_excel(excel_file)
+
     
