@@ -20,33 +20,33 @@ plt.style.use('ggplot')
 
 
 def qq_grid(dataframe, attributes):
-    fig, axes = plt.subplots(2,4, sharex=True, sharey=True)
-    for idx, att in enumerate(attributes): 
+    fig, axes = plt.subplots(2, 4, sharex=True, sharey=True)
+    for idx, att in enumerate(attributes):
         x = idx // 4
         y = idx % 4
-        
-        # Convert everything to log10 for this 
-        qqplot(np.log10(dataframe[att]), plot=axes[x,y])
-        axes[x,y].set_title(att)
-        
+
+        # Convert everything to log10 for this
+        qqplot(np.log10(dataframe[att]), plot=axes[x, y])
+        axes[x, y].set_title(att)
+
         if x < 0:
-            axes[x,y].set_xlabel('')
-        
+            axes[x, y].set_xlabel('')
+
         if y == 0 or y == 4:
-            axes[x,y].set_ylabel('Ordered Values')
+            axes[x, y].set_ylabel('Ordered Values')
         else:
-            axes[x,y].set_ylabel('')
-            
-        axes[x,y].get_lines()[0].set_marker('o')
-        axes[x,y].get_lines()[0].set_markerfacecolor('white')
+            axes[x, y].set_ylabel('')
+
+        axes[x, y].get_lines()[0].set_marker('o')
+        axes[x, y].get_lines()[0].set_markerfacecolor('white')
         w, p = normaltest(dataframe[att])
-        
+
         if p < 1e-2:
             p = '<0.01'
         elif p < 5e-1:
             p = '<0.05'
         else:
             p = '>0.05'
-            
-        axes[x,y].text(1,-6, r'$P${0}'.format(p))
+
+        axes[x, y].text(1, -6, r'$P${0}'.format(p))
     return axes
