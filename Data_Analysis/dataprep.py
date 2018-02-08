@@ -7,12 +7,12 @@ Created on Mon Feb  5 12:09:35 2018
 
 
 The goal of this file is to provide an efficent and
-reproducable method of cleaning micro-CT data
+reproducible method of cleaning micro-CT data
 
 The functionality will include:
     - reading data
     - removing error values
-    - organising into concise dataframes
+    - organising into concise dataframes (df)
 """
 
 
@@ -77,12 +77,24 @@ def make_dataframe(folder, get_rachis=False):
     return df
 
 
-def join_spikes_by_rachis(df, )
+def join_spikes_by_rachis(grain_df):
+    pass
 
 
-def remove_percentile(df, column):
-    P = np.percentile(df[column], [10, 90])
-    return df[(df[column] > P[0]) & (df[column] < P[1])]
+def remove_percentile(df, column, target_percent, bool_below=False):
+    """
+    This function is targeted at removing a percentile of a dataframe
+    it uses a column to decide which to measure against. By default this 
+    will remove everything above the percentile value 
+
+    @param df is the dataframe to manipulate
+    @param column is the attribute column to base the removal of
+    @param target_percent is the percentage to aim for
+    @param bool_below is a default param which if set
+    to True will remove values below rather than above percentage
+    """
+    P = np.percentile(df[column], target_percent)
+    df = df[df[column] < P] if bool_below else df[df[column] < P]
 
 
 def get_spike_info(grain_df, excel_file, join_column):
@@ -96,12 +108,12 @@ def get_spike_info(grain_df, excel_file, join_column):
     """
 
     # Make a copy as we don't want to change the original
-    df = drain_df.copy(deep=True)
+    df = grain_df.copy(deep=True)
 
-    info_file = pd.read_excel(excel_file,
-                              index_col='Folder#')
+    info = pd.read_excel(excel_file,
+                         index_col='Folder#')
 
-    def look_up(x, y): return info_file.loc[x['folderid']][y]
+    def look_up(x, y): return info.loc[x['folderid']][y]
 
     def gather_data(x): return pd.Series([look_up(x, 'Hulled/Naked'),
                                           look_up(x, 'Common name'),
