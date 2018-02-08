@@ -78,14 +78,37 @@ def make_dataframe(folder, get_rachis=False):
 
 
 def join_spikes_by_rachis(grain_df):
-    pass
+    """
+    So important part of this function is that we accept that the data is what it is
+    that is to say: rtop, rbot and Z are all orientated in the proper direction
+
+    It's main purpose is to join split spikes by rachis nodes identified in the
+    analysis process
+
+    @param grain_df is the grain dataframe to take on-board
+    """
+
+    # So we are only really interested in grains which are not labelled with
+    # 'all' in partition, so let's id them to start with
+    for sn in grain_df[grain_df['partition'] != 'all']['samplename'].unique():
+
+        # TODO Fix this garbage that doesn't work
+        candidates_to_update = grain_df[(grain_df['samplename'] == sn) & (
+            grain_df['partition'] == 'top')]
+
+        original_values = grain_df[(grain_df['samplename'] == sn) & (
+            grain_df['partition'] == 'top')]['z']
+
+        update_ammount = 0
+
+        grain_df.loc[candidates_to_update, 'z'] = 0
 
 
 def remove_percentile(df, column, target_percent, bool_below=False):
     """
     This function is targeted at removing a percentile of a dataframe
-    it uses a column to decide which to measure against. By default this 
-    will remove everything above the percentile value 
+    it uses a column to decide which to measure against. By default this
+    will remove everything above the percentile value
 
     @param df is the dataframe to manipulate
     @param column is the attribute column to base the removal of
@@ -102,8 +125,8 @@ def get_spike_info(grain_df, excel_file, join_column):
     This function should do something akin to adding additional
     information to the data frame
 
-    @note there is some confusion in the NPPC about whether to use 
-    folder name or file name as the unique id when this is made into 
+    @note there is some confusion in the NPPC about whether to use
+    folder name or file name as the unique id when this is made into
     end-user software, a toggle should be added to allow this
     """
 
@@ -121,13 +144,15 @@ def get_spike_info(grain_df, excel_file, join_column):
                                           look_up(x, 'Ploidy'),
                                           look_up(x, 'Wild/Domesticated'),
                                           look_up(x, 'Sample name'),
-                                          look_up(x, 'Sub type')])
+                                          look_up(x, 'Sub type'),
+                                          look_up(x, 'Ear')])
     df[['hulling',
         'commonname',
         'genome',
         'ploidy',
         'domestication',
         'samplename',
-        'subtype']] = df.apply(gather_data, axis=1)
+        'subtype',
+        'partition']] = df.apply(gather_data, axis=1)
 
     return df
