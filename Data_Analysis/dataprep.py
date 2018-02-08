@@ -77,6 +77,9 @@ def make_dataframe(folder, get_rachis=False):
     return df
 
 
+def join_spikes_by_rachis(df, )
+
+
 def remove_percentile(df, column):
     P = np.percentile(df[column], [10, 90])
     return df[(df[column] > P[0]) & (df[column] < P[1])]
@@ -93,7 +96,7 @@ def get_spike_info(grain_df, excel_file, join_column):
     """
 
     # Make a copy as we don't want to change the original
-    grain_df = df.copy(deep=True)
+    df = drain_df.copy(deep=True)
 
     info_file = pd.read_excel(excel_file,
                               index_col='Folder#')
@@ -107,12 +110,12 @@ def get_spike_info(grain_df, excel_file, join_column):
                                           look_up(x, 'Wild/Domesticated'),
                                           look_up(x, 'Sample name'),
                                           look_up(x, 'Sub type')])
-    grain_df[['hulling',
-              'commonname',
-              'genome',
-              'ploidy',
-              'domestication',
-              'samplename',
-              'subtype']] = grain_df.apply(gather_data, axis=1)
+    df[['hulling',
+        'commonname',
+        'genome',
+        'ploidy',
+        'domestication',
+        'samplename',
+        'subtype']] = df.apply(gather_data, axis=1)
 
-    return grain_df
+    return df
