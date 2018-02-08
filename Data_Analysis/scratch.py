@@ -12,5 +12,5 @@ prim_data_files = '../../Data/Primitives'
 # load in grain and rachis files
 g, r = gather_data(prim_data_files)
 
-# create a dataframe
+# create a data frame
 df = make_dataframe(g, rachis_files=r)

@@ -147,7 +147,8 @@ end
         mal = sort([vst.MinorAxisLength], 'descend');
         
         stats.crease_depth = (mal(1) * conv) / 1000;
-        rawstats.crease_depth = mal(1); 
+        rawstats.crease_depth = mal(1);         
+
         
         stats.surface_area = (imSurface(A) * (conv^2)) / 1000^2;
         rawstats.surface_area = imSurface(A); 

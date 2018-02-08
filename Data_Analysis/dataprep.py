@@ -44,7 +44,7 @@ def gather_data(folder):
     return (candidate_files, rachis)
 
 
-def make_dataframe(grain_files, rachis_files=None):
+def make_dataframe(folder, get_rachis=False):
     """
     this function returns a dataframe of
     grain parameters and optionally of the rachis top and bottom
@@ -52,10 +52,12 @@ def make_dataframe(grain_files, rachis_files=None):
     @param rachis_files is an optional output from gather_data also
     @returns a dataframe of the information pre-joining
     """
+    grain_files, rachis_files = gather_data(folder)
+
     # load the files as dfs
     dfs = {f: pd.read_csv(f) for f in grain_files}
     # load the files for rachis too
-    if rachis_files:
+    if get_rachis:
         rachis = {f: pd.read_csv(f) for f in rachis_files}
     # add plant name to files
     # and rachis if applicable
@@ -63,7 +65,7 @@ def make_dataframe(grain_files, rachis_files=None):
         # Grab the plant name and the folder name
         v['scanid'] = basename(k).split('.', 1)[0]
         v['folderid'] = dirname(k).rsplit('/', 1)[-1]
-        if rachis_files:
+        if get_rachis:
             # reverse the rachis here so we don't have to later
             v['rbot'] = rachis['{0}-rachis.csv'.format(k[:-4])]['rtop'][0]
             v['rtop'] = rachis['{0}-rachis.csv'.format(k[:-4])]['rbot'][0]
@@ -91,7 +93,9 @@ def get_spike_info(grain_df, excel_file, join_column):
     info_file = pd.read_excel(excel_file,
                               index_col='Folder#')
 
-    def gather_data_lambda(x): return pd.Series([1,
+    def look_up_lambda(x, y): return info_file.iloc[x['folderid']][y]
+
+    def gather_data_lambda(x): return pd.Series([look_up_lambda(x, 'Hulled/Naked'),
                                                  1,
                                                  1,
                                                  1,

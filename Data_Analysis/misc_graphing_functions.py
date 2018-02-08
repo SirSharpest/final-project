@@ -49,4 +49,4 @@ def qq_grid(dataframe, attributes):
             p = '>0.05'
 
         axes[x, y].text(1, -6, r'$P${0}'.format(p))
-    return axes
+    return (fig, axes)
