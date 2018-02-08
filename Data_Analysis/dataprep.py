@@ -53,7 +53,6 @@ def make_dataframe(folder, get_rachis=False):
     @returns a dataframe of the information pre-joining
     """
     grain_files, rachis_files = gather_data(folder)
-
     # load the files as dfs
     dfs = {f: pd.read_csv(f) for f in grain_files}
     # load the files for rachis too
@@ -72,6 +71,9 @@ def make_dataframe(folder, get_rachis=False):
     # Flip the scans so that the Z makes sense
     df = pd.concat(dfs.values())
     df['z'] = abs(df['z'] - df['z'].max())
+    # Finally just turn the folder number into an int so that it's easier to
+    # compare with the look-up table later
+    df['folderid'] = df['folderid'].astype(int)
     return df
 
 
@@ -90,22 +92,27 @@ def get_spike_info(grain_df, excel_file, join_column):
     end-user software, a toggle should be added to allow this
     """
 
+    # Make a copy as we don't want to change the original
+    grain_df = df.copy(deep=True)
+
     info_file = pd.read_excel(excel_file,
                               index_col='Folder#')
 
-    def look_up_lambda(x, y): return info_file.iloc[x['folderid']][y]
+    def look_up(x, y): return info_file.loc[x['folderid']][y]
 
-    def gather_data_lambda(x): return pd.Series([look_up_lambda(x, 'Hulled/Naked'),
-                                                 1,
-                                                 1,
-                                                 1,
-                                                 1,
-                                                 1,
-                                                 1])
+    def gather_data(x): return pd.Series([look_up(x, 'Hulled/Naked'),
+                                          look_up(x, 'Common name'),
+                                          look_up(x, 'Genome'),
+                                          look_up(x, 'Ploidy'),
+                                          look_up(x, 'Wild/Domesticated'),
+                                          look_up(x, 'Sample name'),
+                                          look_up(x, 'Sub type')])
     grain_df[['hulling',
               'commonname',
               'genome',
               'ploidy',
               'domestication',
               'samplename',
-              'sampletype']] = grain_df.apply(gather_data_lambda, axis=1)
+              'subtype']] = grain_df.apply(gather_data, axis=1)
+
+    return grain_df
