@@ -93,15 +93,9 @@ def join_spikes_by_rachis(grain_df):
     for sn in grain_df[grain_df['partition'] != 'all']['samplename'].unique():
 
         # TODO Fix this garbage that doesn't work
-        candidates_to_update = grain_df[(grain_df['samplename'] == sn) & (
-            grain_df['partition'] == 'top')]
 
-        original_values = grain_df[(grain_df['samplename'] == sn) & (
-            grain_df['partition'] == 'top')]['z']
-
-        update_ammount = 0
-
-        grain_df.loc[candidates_to_update, 'z'] = 0
+        grain_df[(grain_df['samplename'] == sn) & (grain_df['partition'] == 'top')]['z'] = grain_df[(
+            grain_df['samplename'] == sn) & (grain_df['partition'] == 'top')]['z'] + 1
 
 
 def remove_percentile(df, column, target_percent, bool_below=False):
@@ -120,7 +114,7 @@ def remove_percentile(df, column, target_percent, bool_below=False):
     df = df[df[column] < P] if bool_below else df[df[column] < P]
 
 
-def get_spike_info(grain_df, excel_file, join_column):
+def get_spike_info(grain_df, excel_file, join_column='Folder#'):
     """
     This function should do something akin to adding additional
     information to the data frame
@@ -133,26 +127,21 @@ def get_spike_info(grain_df, excel_file, join_column):
     # Make a copy as we don't want to change the original
     df = grain_df.copy(deep=True)
 
+    # Grab the linking excel file
     info = pd.read_excel(excel_file,
                          index_col='Folder#')
 
+    # These are the features to grab
+    features = ['Hulled/Naked', 'Common name', 'Genome', 'Ploidy',
+                'Wild/Domesticated', 'Sample name', 'Sub type', 'Ear']
+
+    # Lambda to look up the feature in excel spreadsheet
     def look_up(x, y): return info.loc[x['folderid']][y]
 
-    def gather_data(x): return pd.Series([look_up(x, 'Hulled/Naked'),
-                                          look_up(x, 'Common name'),
-                                          look_up(x, 'Genome'),
-                                          look_up(x, 'Ploidy'),
-                                          look_up(x, 'Wild/Domesticated'),
-                                          look_up(x, 'Sample name'),
-                                          look_up(x, 'Sub type'),
-                                          look_up(x, 'Ear')])
-    df[['hulling',
-        'commonname',
-        'genome',
-        'ploidy',
-        'domestication',
-        'samplename',
-        'subtype',
-        'partition']] = df.apply(gather_data, axis=1)
+    # Lambda form a series (data row) and apply it to dataframe
+    def gather_data(x): return pd.Series([look_up(x, y) for y in features])
 
+    df[features] = df.apply(gather_data, axis=1)
+
+    # Return the copy
     return df
