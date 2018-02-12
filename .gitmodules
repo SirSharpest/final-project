@@ -2,3 +2,6 @@
 	path = tomviz
 	url = git@github.com:SirSharpest/tomviz.git
 	branch = master
+[submodule "seed-analyser-3000"]
+	path = seed-analyser-3000
+	url = git@github.com:SirSharpest/seed-analyser-3000.git
