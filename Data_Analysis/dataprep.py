@@ -90,12 +90,13 @@ def join_spikes_by_rachis(grain_df):
 
     # So we are only really interested in grains which are not labelled with
     # 'all' in partition, so let's id them to start with
-    for sn in grain_df[grain_df['partition'] != 'all']['samplename'].unique():
+    for sn in grain_df[grain_df['Ear'] != 'all']['Sample name'].unique():
 
-        # TODO Fix this garbage that doesn't work
+        bot = grain_df.loc[(grain_df['Sample name'] == sn)
+                           & (grain_df['Ear'] == 'bot')]['rbot']
 
-        grain_df[(grain_df['samplename'] == sn) & (grain_df['partition'] == 'top')]['z'] = grain_df[(
-            grain_df['samplename'] == sn) & (grain_df['partition'] == 'top')]['z'] + 1
+        grain_df.loc[(grain_df['Sample name'] == sn) & (grain_df['Ear'] == 'top'), 'z'] = grain_df.loc[(
+            grain_df['Sample name'] == sn) & (grain_df['Ear'] == 'top'), 'z'] + bot
 
 
 def remove_percentile(df, column, target_percent, bool_below=False):
