@@ -5,3 +5,6 @@
 [submodule "seed-analyser-3000"]
 	path = seed-analyser-3000
 	url = git@github.com:SirSharpest/seed-analyser-3000.git
+[submodule "MATLAB_Analysis"]
+	path = MATLAB_Analysis
+	url = git@github.com:SirSharpest/microCT_grain_analyser.git
