@@ -8,3 +8,6 @@
 [submodule "Grain_Analyser_GUI"]
 	path = Grain_Analyser_GUI
 	url = git@github.com:SirSharpest/Grain_Analyser_GUI.git
+[submodule "CT_Analysing_Library"]
+	path = CT_Analysing_Library
+	url = git@github.com:SirSharpest/CT_Analysing_Library.git
