@@ -2,9 +2,9 @@
 	path = tomviz
 	url = git@github.com:SirSharpest/tomviz.git
 	branch = master
-[submodule "seed-analyser-3000"]
-	path = seed-analyser-3000
-	url = git@github.com:SirSharpest/seed-analyser-3000.git
 [submodule "MATLAB_Analysis"]
 	path = MATLAB_Analysis
 	url = git@github.com:SirSharpest/microCT_grain_analyser.git
+[submodule "Grain_Analyser_GUI"]
+	path = Grain_Analyser_GUI
+	url = git@github.com:SirSharpest/Grain_Analyser_GUI.git
