@@ -22,12 +22,13 @@ def cropPercentile(nparr, percent):
     nparr[nparr < np.percentile(nparr, percent).min()] = 0
     return nparr
 
+
 img = imread('../../Images/Example Grains/example_barley_grain.png')
 gray = rgb2gray(img)
 
 
-# Plot from same origin to top point 
-# Do this over lots of points 
+# Plot from same origin to top point
+# Do this over lots of points
 
 plt.figure()
 plt.imshow(gray, cmap='gray')
